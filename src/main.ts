@@ -1,5 +1,5 @@
 import "./style.css";
-import earth from "./meshs/earth";
+import { earth, atmosphere, changeCameraPos } from "./meshs/earth";
 import sunLight from "./lights/sunlight";
 
 import * as THREE from "three";
@@ -21,12 +21,14 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 camera.position.setZ(30);
 
 scene.add(earth);
+scene.add(atmosphere);
 scene.add(sunLight);
 
 function animate() {
   requestAnimationFrame(animate);
   earth.rotateY(0.005);
   renderer.render(scene, camera);
+  changeCameraPos(camera.position);
 }
 
 animate();
