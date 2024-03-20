@@ -1,6 +1,4 @@
 import * as THREE from "three";
-import { Geometry } from "three/examples/jsm/deprecated/Geometry.js";
-import { cameraPosition } from "three/examples/jsm/nodes/Nodes.js";
 
 const loader = new THREE.TextureLoader();
 
@@ -22,10 +20,7 @@ const earth = new THREE.Mesh(
 const atmosphereGeometry = new THREE.SphereGeometry(16, 128, 64);
 
 const atmosphereShader = new THREE.ShaderMaterial({
-  transparent: true,
-  opacity: 0.5,
   uniforms: {
-    cameraPosition: { value: new THREE.Vector3() },
     atmosphereColor: { value: new THREE.Color(0x0077ff) },
   },
   vertexShader: `
@@ -49,7 +44,7 @@ const atmosphereShader = new THREE.ShaderMaterial({
   
   void main() {
     vec4 baseColor = texture2D(baseTexture, vUv);
-      gl_FragColor = vec4(1.0 - baseColor.rgb, baseColor.a);
+    gl_FragColor = vec4(1.0 - baseColor.rgb, baseColor.a);
   }
   
   
@@ -58,9 +53,4 @@ const atmosphereShader = new THREE.ShaderMaterial({
 
 const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereShader);
 
-function changeCameraPos(cameraPos: THREE.Vector3) {
-  return;
-  atmosphereShader.uniforms.cameraPosition.value = cameraPos;
-}
-
-export { earth, atmosphere, changeCameraPos };
+export { earth, atmosphere, atmosphereShader };

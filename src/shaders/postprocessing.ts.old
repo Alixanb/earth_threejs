@@ -1,0 +1,43 @@
+import * as THREE from "three";
+
+const postProcessMaterial = new THREE.ShaderMaterial({
+  vertexShader: `
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`,
+  fragmentShader: `
+  varying vec2 vUv;
+  uniform sampler2D framebufferTexture; // Input texture from the framebuffer
+
+  void main() {
+    vec4 texel = texture2D(framebufferTexture, vUv); // Sample from the input texture
+    // Access texel color components (RGBA)
+    float redComponent = texel.r;
+    float greenComponent = texel.g;
+    float blueComponent = texel.b;
+    float alphaComponent = texel.a;
+
+    // Modify texel color (e.g., invert the color)
+    texel = vec4(1.0 - redComponent, 1.0 - greenComponent, 1.0 - blueComponent, alphaComponent);
+
+    // Assign modified texel color to the output
+    gl_FragColor = texel;
+}
+`,
+  uniforms: {
+    framebufferTexture: { value: null }, // This will be set to the framebuffer texture
+  },
+});
+
+const fullscreenQuadGeometry = new THREE.PlaneGeometry(2, 2);
+
+const postProcessing = new THREE.Mesh(
+  fullscreenQuadGeometry,
+  postProcessMaterial
+);
+
+export default postProcessing;
+export { postProcessMaterial };
